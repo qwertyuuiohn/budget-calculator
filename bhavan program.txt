@@ -1,0 +1,73 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+public class BudgetCalculator {
+ public static void main(String[] args) {
+ // Create frame
+ JFrame frame = new JFrame("Budget Calculator");
+ frame.setSize(400, 500);
+ frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+ frame.setLayout(new FlowLayout());
+ // Create components
+ JLabel incomeLabel = new JLabel("Enter your total income:");
+ JTextField incomeField = new JTextField(10);
+ JLabel categoryLabel = new JLabel("Enter number of expense categories:");
+ JTextField categoryField = new JTextField(10);
+ JButton nextButton = new JButton("Next");
+ JTextArea resultArea = new JTextArea(10, 30);
+ resultArea.setEditable(false);
+ // Add components to frame
+ frame.add(incomeLabel);
+ frame.add(incomeField);
+ frame.add(categoryLabel);
+ frame.add(categoryField);
+ frame.add(nextButton);
+ frame.add(resultArea);
+ // Set up action for the "Next" button
+ nextButton.addActionListener(new ActionListener() {
+ public void actionPerformed(ActionEvent e) {
+ try {
+ double income = Double.parseDouble(incomeField.getText());
+ int numCategories = Integer.parseInt(categoryField.getText());
+ // Show input dialog for each category
+ String[] categories = new String[numCategories];
+ double[] expenses = new double[numCategories];
+ for (int i = 0; i < numCategories; i++) {
+ categories[i] = JOptionPane.showInputDialog(
+ frame,
+ "Enter the name of category " + (i + 1) + ":"
+ );
+ expenses[i] = Double.parseDouble(JOptionPane.showInputDialog(
+ frame,
+ "Enter the expense amount for " + categories[i] + ":"));
+}
+ // Calculate total expenses
+ double totalExpenses = 0;
+ for (double expense : expenses) {
+ totalExpenses += expense;
+ }
+ // Calculate remaining budget
+ double remainingBudget = income - totalExpenses;
+ // Display results in the text area
+ StringBuilder result = new StringBuilder();
+ result.append("Income: $").append(income).append("\n");
+ result.append("Total Expenses: $").append(totalExpenses).append("\n");
+ result.append("Remaining Budget: $").append(remainingBudget).append("\n");
+ if (remainingBudget < 0) {
+ result.append("Warning: You have exceeded your budget by $")
+ .append(Math.abs(remainingBudget)).append("\n");
+ } else if (remainingBudget == 0) {
+ result.append("You have balanced your budget!\n");
+ } else {
+ result.append("Good job! You have saved $").append(remainingBudget).append("\n");
+ }
+ resultArea.setText(result.toString());
+ } catch (NumberFormatException ex) {
+ JOptionPane.showMessageDialog(frame, "Please enter valid numbers!", "Input Error", 
+JOptionPane.ERROR_MESSAGE);
+ }
+ }
+ });
+ // Make frame visible
+ frame.setVisible(true);
